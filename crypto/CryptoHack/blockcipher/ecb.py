@@ -2,24 +2,32 @@ import requests
 from string import printable
 from Cryptodome.Cipher import AES
 from Cryptodome.Util.Padding import pad, unpad
-def print_in_blocks_of(s, n):
+def split_blocks(s, n):
+    l = []
     for i in range(0, len(s), n):
-        print(s[i:i+n])
+        l.append(''.join(s[i:i+n]))
+    return l
+def print_blocks(n):
+    for i in n:
+        print(i)
 if __name__ == "__main__":
-    p = 'a'*46
+    block_size = 32
+    p = 'a'*12
     site = 'http://aes.cryptohack.org/ecb_oracle/encrypt/{plaintext}/'.format(plaintext=p)
     r = requests.get(site)
     saved = r.json()['ciphertext']
-    print_in_blocks_of(saved, 32)
-    p = 'a'*44
+    b12 = split_blocks(saved, block_size)
+    print_blocks(b12)
+    p = 'a'*14
     for c in printable:
         site = 'http://aes.cryptohack.org/ecb_oracle/encrypt/{plaintext}/'.format(plaintext=p+c.encode('utf-8').hex())
         r = requests.get(site)
         resp = r.json()['ciphertext']
-        if resp[32:38] == saved[32:38]:
+        b14 = split_blocks(resp, block_size)
+        if b14[0]== b12[0]:
             print('='*20)
             print(c)
-            print_in_blocks_of(resp, 32)
+            print_blocks(b14)
             print('='*20)
     # by testing the length of input and output we determined that the input
     # must be an even length and that the blocks are 16 bytes
