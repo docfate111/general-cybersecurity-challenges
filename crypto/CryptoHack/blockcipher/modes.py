@@ -23,7 +23,7 @@ for i in words:
     ans = ans['plaintext']
     # ans = bytes.fromhex(ans['plaintext'][2:])
     if b'cry' in ans or b'CRY' in ans:
-        print(ans)
+        print(ans.decode('utf-8'))
     # result = decrypt('c92b7734070205bdf6c0087a751466ec13ae15e6f1bcdd3f3a535ec0f4bbae66', KEY)
     # if b'cry' in result or b'CRY' in result:
     #     print(result, KEY)
